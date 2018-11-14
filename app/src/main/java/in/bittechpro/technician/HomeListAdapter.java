@@ -43,7 +43,7 @@ public class HomeListAdapter extends ArrayAdapter<String> {
         txt_number.setText(number[position]);
         txt_body.setText(body[position]);
 
-        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy hh:mm:ss");
         Long milli = Long.valueOf(String.valueOf(date[position]));
         String dateString = formatter.format(new Date(milli));
 
