@@ -1,6 +1,8 @@
 package in.bittechpro.technician;
 
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -12,14 +14,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.GridView;
+import android.widget.Toast;
+
+import com.ogaclejapan.arclayout.ArcLayout;
 
 import java.math.BigInteger;
 import java.util.Objects;
 
-public class HomeNewFragment extends Fragment {
+public class HomeNewFragment extends Fragment implements Animation.AnimationListener {
 
 
     public HomeNewFragment() {
@@ -33,6 +41,9 @@ public class HomeNewFragment extends Fragment {
 
     DBHelper dbHelper;
     FloatingActionButton fab_restart;
+    Button butt,butq;
+    ArcLayout arcLayout;
+    Animation animFade;
 
 
     @Override
@@ -42,8 +53,14 @@ public class HomeNewFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_home_new, container, false);
         gridView =view.findViewById(R.id.dev_grid_view);
         fab_restart = view.findViewById(R.id.fab_restart);
+        arcLayout = view.findViewById(R.id.arc_layout);
+        butt = view.findViewById(R.id.butt);
+        butq = view.findViewById(R.id.butq);
         dbHelper = new DBHelper(getActivity());
         Objects.requireNonNull(getActivity()).setTitle("HOME");
+        animFade = AnimationUtils.loadAnimation(getContext(),
+                R.anim.fade );
+        animFade.setAnimationListener(this);
 
         fab_restart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,6 +69,25 @@ public class HomeNewFragment extends Fragment {
                         .getLaunchIntentForPackage( MainActivity.contextOfApplication.getPackageName() );
                 Objects.requireNonNull(i).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 startActivity(i);
+            }
+        });
+        butt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                    arcLayout.setVisibility(View.VISIBLE);
+                    arcLayout.startAnimation(animFade);
+
+
+            }
+        });
+        butq.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Toast.makeText(getActivity(), "sdfghsg", Toast.LENGTH_SHORT).show();
+
+
             }
         });
 
@@ -65,10 +101,12 @@ public class HomeNewFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setState();
+        //setState();
 
 
-        updateHome();
+        //updateHome();
+
+
 
 
 
@@ -134,5 +172,22 @@ public class HomeNewFragment extends Fragment {
             gridView.setAdapter(adapter);
         }
         res.close();
+    }
+
+    @Override
+    public void onAnimationStart(Animation animation) {
+
+    }
+
+    @Override
+    public void onAnimationEnd(Animation animation) {
+
+        arcLayout.clearAnimation();
+
+    }
+
+    @Override
+    public void onAnimationRepeat(Animation animation) {
+
     }
 }

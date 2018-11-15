@@ -7,7 +7,6 @@
     tools:context=".HomeNewFragment">
 
 
-
     <GridView
         android:id="@+id/dev_grid_view"
         android:layout_width="match_parent"
@@ -17,8 +16,8 @@
         android:horizontalSpacing="10dp"
         android:numColumns="auto_fit"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="10dp" >
-    </GridView>
+        android:verticalSpacing="10dp"
+        android:visibility="gone"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_restart"
@@ -31,4 +30,186 @@
         android:clickable="true"
         android:focusable="true"
         android:src="@android:drawable/stat_notify_sync" />
+
+    <ImageButton
+        android:id="@+id/butt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+
+        android:layout_centerVertical="true"
+
+        android:scaleType="centerCrop" />
+
+    <com.ogaclejapan.arclayout.ArcLayout
+        android:id="@+id/arc_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignStart="@+id/butt"
+        android:layout_alignTop="@+id/butt"
+        android:layout_alignEnd="@+id/butt"
+        android:layout_alignBottom="@+id/butt"
+        android:layout_marginStart="-145dp"
+        android:layout_marginTop="-145dp"
+        android:layout_marginEnd="-145dp"
+        android:layout_marginBottom="-145dp"
+        android:animateLayoutChanges="true"
+        android:visibility="invisible"
+        app:arc_axisRadius="120dp"
+        app:arc_color="#4D000000"
+        app:arc_origin="center_vertical|center_horizontal"
+        app:arc_radius="168dp">
+
+        <Button
+            android:id="@+id/butq"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="A"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="B"
+            android:textColor="#FFFFFF" />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="C"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="A"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="B"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="C"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="A"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="B"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="C"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="A"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="B"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="C"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="A"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="B"
+            android:textColor="#FFFFFF"
+
+            />
+
+        <Button
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/round_button"
+            android:gravity="center"
+            android:text="C"
+            android:textColor="#FFFFFF"
+
+            />
+
+    </com.ogaclejapan.arclayout.ArcLayout>
+
+
 </RelativeLayout>
