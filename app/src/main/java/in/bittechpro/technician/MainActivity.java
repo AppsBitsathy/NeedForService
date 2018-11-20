@@ -1,6 +1,7 @@
 package in.bittechpro.technician;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -9,6 +10,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -25,7 +27,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.math.BigInteger;
@@ -33,7 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity  {
+
 
     String[] permissions = new String[]{
             Manifest.permission.READ_SMS,
@@ -50,7 +56,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
     DBHelper dbHelper;
+    public static TextView mainTitle;
 
+    public static BottomNavigationView bottomNavigationView;
+    public static BottomNavigationView getBottomNavigationView() {
+        return bottomNavigationView;
+    };
 
 
     @Override
@@ -58,30 +69,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
 
         contextOfApplication = getApplicationContext();
 
         checkPermissions(permissions,this,this);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        bottomNavigationView = findViewById(R.id.b_nav);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                fragment = null;
+                switch (menuItem.getItemId()) {
+                    case R.id.navigation_home:
+                        fragment = new StateFragment();
+                        break;
+                    case R.id.navigation_device:
+                        fragment = new DeviceFragment();
+                        break;
+                    case R.id.navigation_employee:
+                        fragment = new EmployeeFragment();
+                        break;
+                    case R.id.navigation_backup:
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+                        break;
+
+                }
+                if (fragment != null) {
+
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    ft.setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out);
+                    ft.replace(R.id.content_frame, fragment);
+                    ft.commit();
+                    return true;
+                } else {
+                    Toast.makeText(MainActivity.this, "will be created", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
+            }
+        });
+
+
+        mainTitle= findViewById(R.id.title_toolbar);
 
         dbHelper = new DBHelper(this);
 
         addSms();
 
-
-
         if (fragment == null) {
-            fragment = new HomeNewFragment();
+            fragment = new StateFragment();
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.content_frame, fragment);
             ft.commit();
@@ -90,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void addSms() {
 
-        int count=0,i=0,state=0;
+        int count,i=0;
         Cursor res = dbHelper.getAllDev();
         count = res.getCount();
         if(count > 0) {
@@ -103,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             Uri inboxURI = Uri.parse("content://sms/inbox");
             for(BigInteger num : num_ary) {
-                count =0; i = 0;
+                i = 0;
                 arrayList = new ArrayList<>();
 
                 Cursor c = getContentResolver().query(inboxURI, null, "address='+91"+num+"'", null, null);
@@ -139,41 +175,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         } else {
             super.onBackPressed();
         }
-    }
-
-
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        displaySelectedScreen(item.getItemId());
-        return true;
-    }
-
-    private void displaySelectedScreen(int itemId) {
-        fragment = null;
-        switch (itemId) {
-            case R.id.nav_employee:
-                fragment = new EmployeeFragment();
-                break;
-            case R.id.nav_home:
-                fragment = new HomeNewFragment();
-                break;
-            case R.id.nav_device:
-                fragment = new DeviceFragment();
-                break;
-            case R.id.nav_dev_emp:
-                fragment = new AssignFragment();
-                break;
-        }
-        if (fragment != null) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment);
-            ft.commit();
-        } else
-            Toast.makeText(this, "hello", Toast.LENGTH_SHORT).show();
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
     }
 
     @Override

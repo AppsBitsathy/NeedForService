@@ -17,7 +17,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TABLE_DEV ="DEV";
 
     DBHelper(Context context) {
-        super(context, DB_NAME, null, 11);
+        super(context, DB_NAME, null, 12);
     }
 
 
@@ -110,13 +110,13 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("ID", String.valueOf(number));
         contentValues.put("NAME",name);
         long result = db.insertWithOnConflict(TABLE_DEV,null,contentValues,SQLiteDatabase.CONFLICT_REPLACE);
-        //createDevCompTable(String.valueOf(number));
-        return result != -1;
+
+        return result != -1 && createDevCompTable(String.valueOf(number));
     }
 
     Cursor getAllDev() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("select * from "+TABLE_DEV,null);
+        return db.rawQuery("select * from "+TABLE_DEV+" ORDER BY NAME",null);
     }
 
     Cursor getOneDev(BigInteger id){
@@ -127,7 +127,7 @@ public class DBHelper extends SQLiteOpenHelper {
     boolean deleteOneDev(BigInteger id){
         SQLiteDatabase db = this.getWritableDatabase();
         long result = db.delete(TABLE_DEV, "ID = "+id,null);
-        return  result!=-1;
+        return  result!=-1 && deleteCompTable(String.valueOf(id));
     }
     boolean updateDev(BigInteger id,BigInteger number,String name){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -154,28 +154,32 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     /////////////DYNAMIC TABLE/////
-    void createDevCompTable(String table) {
+    private Boolean createDevCompTable(String table) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("CREATE TABLE IF NOT EXISTS \"" + table + "\" (ID INTEGER PRIMARY KEY , STATE INTEGER DEFAULT 0)");
         int i;
         for(i=1;i<=15;i++) {
-            /*ContentValues contentValues = new ContentValues();
-            contentValues.put("ID", String.valueOf(i));
-            db.insertWithOnConflict(table, null, contentValues, SQLiteDatabase.CONFLICT_REPLACE);*/
             db.execSQL("INSERT OR REPLACE  INTO \""+table+"\"(ID) VALUES ("+String.valueOf(i)+")");
         }
+        return  true;
     }
     boolean updateComp(String table,int id,int state){
         SQLiteDatabase db = this.getWritableDatabase();
-        /*ContentValues contentValues = new ContentValues();
-        contentValues.put("STATE",state);
-        db.update(table, contentValues, "ID = "+id,null);*/
         db.execSQL("UPDATE \""+table+"\" SET STATE="+String.valueOf(state)+" WHERE ID = "+String.valueOf(id));
         return true;
     }
-    Cursor getOneDevState(String table){
+    Cursor getDevCompState(String table){
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("select * from \""+table +"\" WHERE STATE = 1",null);
+    }
+    Cursor getCompTable(String table){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("select * from \""+table +"\"",null);
+    }
+    private boolean deleteCompTable(String id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS \""+id+"\"");
+        return  true;
     }
 
 

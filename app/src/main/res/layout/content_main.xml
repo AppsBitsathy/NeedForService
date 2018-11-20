@@ -9,10 +9,28 @@
     tools:showIn="@layout/app_bar_main">
 
     <FrameLayout
+        android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/content_frame">
+        android:layout_above="@+id/b_nav"
+        android:layout_alignParentStart="true">
 
     </FrameLayout>
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/b_nav"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:menu="@menu/bottom_nav_menu"
+        android:layout_gravity="bottom"
+        android:background="#ffffff"
+
+        android:foreground="?attr/selectableItemBackground"
+        app:itemIconTint="@color/orange"
+        app:itemTextColor="@color/orange"
+        app:elevation="0dp">
+
+    </android.support.design.widget.BottomNavigationView>
 
 </RelativeLayout>

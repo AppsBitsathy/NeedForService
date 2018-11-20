@@ -51,6 +51,10 @@ public class DeviceFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_device, container, false);
 
+        MainActivity.mainTitle.setText("NFS - Device");
+
+        MainActivity.getBottomNavigationView().getMenu().findItem(R.id.navigation_device).setChecked(true);
+
         device = view.findViewById(R.id.spinner_device);
         add_dev = view.findViewById(R.id.add_dev);
         dev_name = view.findViewById(R.id.dev_name);
@@ -76,7 +80,7 @@ public class DeviceFragment extends Fragment {
 
                     if (res) {
                         Toast.makeText(getActivity(), "Device Added Successfully", Toast.LENGTH_SHORT).show();
-                        dbHelper.createDevCompTable(number.toString());
+                        //dbHelper.createDevCompTable(number.toString());
                     } else {
                         Toast.makeText(getActivity(), "Device not Added", Toast.LENGTH_SHORT).show();
                     }

@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -72,6 +73,9 @@ public class EmployeeFragment extends Fragment {
 
     Uri result;
 
+    BottomNavigationView bottomNavigationView;
+    TextView mainTitle;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -79,8 +83,10 @@ public class EmployeeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_employee, container, false);
 
         applicationContext = MainActivity.getContextOfApplication();
+        mainTitle = MainActivity.mainTitle;
 
-
+        bottomNavigationView = MainActivity.getBottomNavigationView();
+        bottomNavigationView.getMenu().findItem(R.id.navigation_employee).setChecked(true);
         device = view.findViewById(R.id.spinner_employee);
         add_emp = view.findViewById(R.id.add_emp);
         emp_name = view.findViewById(R.id.txt_emp_name);
@@ -109,7 +115,6 @@ public class EmployeeFragment extends Fragment {
                     } else {
                         Toast.makeText(getActivity(), "Device not Added", Toast.LENGTH_SHORT).show();
                     }
-
                     restartFrag();
                 }else {
                     Toast.makeText(getActivity(), "Error - Check Details", Toast.LENGTH_SHORT).show();
@@ -142,6 +147,8 @@ public class EmployeeFragment extends Fragment {
             }
         });
 
+        mainTitle.setText("NFS - Employee");
+
         return view;
     }
 
@@ -149,7 +156,7 @@ public class EmployeeFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //you can set the title for your toolbar here for different fragments different titles
-        Objects.requireNonNull(getActivity()).setTitle("Employee");
+
 
         Cursor res = dbHelper.getAllEMP();
         count = res.getCount();

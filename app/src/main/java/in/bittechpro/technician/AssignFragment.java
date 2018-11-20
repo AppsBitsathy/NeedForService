@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
@@ -43,6 +44,7 @@ public class AssignFragment extends Fragment {
 
     StringBuilder item;
 
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -50,13 +52,14 @@ public class AssignFragment extends Fragment {
         view = inflater.inflate(R.layout.fragment_assign, container, false);
 
         spinner_dev_emp =view.findViewById(R.id.spinner_dev_emp);
-        emp_selected = view.findViewById(R.id.txt_emp_selected);
+        /*emp_selected = view.findViewById(R.id.txt_emp_selected);
         txt_emp_selected_old = view.findViewById(R.id.txt_emp_selected_old);
-        assign= view.findViewById(R.id.btn_assign);
+        assign= view.findViewById(R.id.btn_assign);*/
         dbHelper = new DBHelper(getActivity());
 
+
         return view;
-            }
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rel"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.ogaclejapan.arclayout.ArcLayout
+        android:id="@+id/arc_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:animateLayoutChanges="true"
+        android:visibility="invisible"
+        app:arc_axisRadius="100dp"
+        app:arc_color="#00000000"
+        app:arc_freeAngle="false"
+        app:arc_origin="center"
+        app:arc_radius="120dp"
+        app:arc_reverseAngle="false">
+
+        <ImageButton
+            android:id="@+id/fab1"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_menu_manage"
+            android:tint="@color/colorAccent"
+            android:visibility="gone" />
+
+        <!--<ImageButton
+            android:id="@+id/fab2"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red"/>
+        <ImageButton
+            android:id="@+id/fab3"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red" />
+
+        <ImageButton
+            android:id="@+id/fab4"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red"/>
+        <ImageButton
+            android:id="@+id/fab5"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red" />
+
+        <ImageButton
+            android:id="@+id/fab6"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_menu_camera"/>
+
+        <ImageButton
+            android:id="@+id/fab7"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red" />
+
+        <ImageButton
+            android:id="@+id/fab8"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red"/>
+        <ImageButton
+            android:id="@+id/fab9"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red"/>
+
+        <ImageButton
+            android:id="@+id/fab10"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red"/>
+
+        <ImageButton
+            android:id="@+id/fab11"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red"/>
+
+        <ImageButton
+            android:id="@+id/fab12"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red"/>
+
+        <ImageButton
+            android:id="@+id/fab13"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red" />
+
+        <ImageButton
+            android:id="@+id/fab14"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red"/>
+
+        <ImageButton
+            android:id="@+id/fab15"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/round_button"
+            android:backgroundTint="@android:color/holo_green_dark"
+            android:elevation="5dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/icon_red"/>-->
+
+    </com.ogaclejapan.arclayout.ArcLayout>
+
+    <ImageButton
+        android:id="@+id/butt"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+
+        android:adjustViewBounds="true"
+        android:background="@null"
+        android:contentDescription="@string/device_state"
+        android:elevation="0dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/icon_green"
+        android:visibility="visible" />
+
+    <TextView
+        android:id="@+id/txt_device_name"
+        android:layout_width="100dp"
+        android:layout_height="60dp"
+
+        android:layout_alignStart="@+id/butt"
+
+
+        android:layout_alignTop="@+id/butt"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="34dp"
+        android:fontFamily="sans-serif"
+        android:gravity="top|center"
+        android:maxLines="3"
+        android:paddingEnd="2dp"
+        android:text="Device name"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="#ffffff"
+        android:textStyle="bold" />
+
+
+</RelativeLayout>
