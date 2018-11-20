@@ -15,9 +15,10 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TABLE_SMS ="SMS";
     private static final String TABLE_EMP ="EMP";
     private static final String TABLE_DEV ="DEV";
+    private static final String TABLE_LOG ="NFSLOG";
 
     DBHelper(Context context) {
-        super(context, DB_NAME, null, 12);
+        super(context, DB_NAME, null, 17);
     }
 
 
@@ -25,11 +26,13 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
 
-        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SMS + " (ID BIGINT PRIMARY KEY ,NUMBER TEXT,BODY TEXT)");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_SMS + " (ID BIGINT PRIMARY KEY, NUMBER TEXT,BODY TEXT, STATE INTEGER DEFAULT 1)");
 
-        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_DEV + " (ID BIGINT PRIMARY KEY ,NAME TEXT,ROLL TEXT DEFAULT 'Employee not assigned', STATE INTEGER DEFAULT 0)");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_DEV + " (ID BIGINT PRIMARY KEY, NAME TEXT, STATE INTEGER DEFAULT 0)");
 
-        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_EMP + " (ID BIGINT PRIMARY KEY,NAME TEXT)");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_EMP + " (ID BIGINT PRIMARY KEY, NAME TEXT)");
+
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_LOG + " (ID BIGINT PRIMARY KEY, DEV_NAME TEXT NOT NULL, DEV_NUMBER BIGINT NOT NULL, COMP INTEGER NOT NULL, EMP_NAME TEXT, EMP_NUMBER BIGINT, ASSIGN_DATE BIGINT, FINISH_DATE BIGINT, STATE INTEGER DEFAULT 2)");
 
     }
 
@@ -53,18 +56,24 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put("ID", String.valueOf(date));
         contentValues.put("NUMBER",number);
         contentValues.put("BODY",body);
-        long result = db.insertWithOnConflict(TABLE_SMS,null,contentValues,SQLiteDatabase.CONFLICT_REPLACE);
-        return result != -1;
+        long result = db.insertWithOnConflict(TABLE_SMS,null,contentValues,SQLiteDatabase.CONFLICT_IGNORE);
+        return result == 1;
     }
 
     Cursor getAllSms() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("select * from "+TABLE_SMS,null);
+        return db.rawQuery("select * from "+TABLE_SMS+" where state = 1 ",null);
     }
 
     Cursor getLastSms(BigInteger number){
         SQLiteDatabase db = this.getReadableDatabase();
         return db.rawQuery("select * from SMS where NUMBER = "+number+" order by ID desc limit 1",null);
+    }
+    void smsState(BigInteger id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("STATE",0);
+        db.update(TABLE_SMS,contentValues,"ID = "+String.valueOf(id),null);
     }
 
     //////////////EMP////////////////
@@ -74,7 +83,7 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put("ID", String.valueOf(number));
         contentValues.put("NAME",name);
-        long result = db.insertWithOnConflict(TABLE_EMP,null,contentValues,SQLiteDatabase.CONFLICT_REPLACE);
+        long result = db.insertWithOnConflict(TABLE_EMP,null,contentValues,SQLiteDatabase.CONFLICT_IGNORE);
         return result != -1;
     }
 
@@ -109,9 +118,12 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put("ID", String.valueOf(number));
         contentValues.put("NAME",name);
-        long result = db.insertWithOnConflict(TABLE_DEV,null,contentValues,SQLiteDatabase.CONFLICT_REPLACE);
-
-        return result != -1 && createDevCompTable(String.valueOf(number));
+        long result = db.insertWithOnConflict(TABLE_DEV,null,contentValues,SQLiteDatabase.CONFLICT_IGNORE);
+        Log.d("result", "insertDEV: "+result);
+        if(result!=-1){
+            createDevCompTable(String.valueOf(number));
+        }
+        return result != -1 ;
     }
 
     Cursor getAllDev() {
@@ -156,16 +168,16 @@ public class DBHelper extends SQLiteOpenHelper {
     /////////////DYNAMIC TABLE/////
     private Boolean createDevCompTable(String table) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("CREATE TABLE IF NOT EXISTS \"" + table + "\" (ID INTEGER PRIMARY KEY , STATE INTEGER DEFAULT 0)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS \"" + table + "\" (ID INTEGER PRIMARY KEY , STATE INTEGER DEFAULT 0, LOG_ID BIGINT DEFAULT 0)");
         int i;
         for(i=1;i<=15;i++) {
             db.execSQL("INSERT OR REPLACE  INTO \""+table+"\"(ID) VALUES ("+String.valueOf(i)+")");
         }
         return  true;
     }
-    boolean updateComp(String table,int id,int state){
+    boolean updateComp(String table,int id,int state,BigInteger log_id){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("UPDATE \""+table+"\" SET STATE="+String.valueOf(state)+" WHERE ID = "+String.valueOf(id));
+        db.execSQL("UPDATE \""+table+"\" SET STATE="+String.valueOf(state)+", LOG_ID = "+String.valueOf(log_id)+" WHERE ID = "+String.valueOf(id));
         return true;
     }
     Cursor getDevCompState(String table){
@@ -181,7 +193,45 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS \""+id+"\"");
         return  true;
     }
+    BigInteger getLogId(String table,int id){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor res = db.rawQuery("select * from \""+table +"\" WHERE id = "+id,null);
+        res.moveToNext();
+        BigInteger log_id = new BigInteger(res.getString(2));
+        res.close();
+        return log_id;
+    }
 
+    /////////////NFS LOG///////////
+    boolean insertLog(BigInteger id,String dev_name, BigInteger dev_number, int comp) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("ID", String.valueOf(id));
+        contentValues.put("DEV_NAME",dev_name);
+        contentValues.put("DEV_NUMBER",String.valueOf(dev_number));
+        contentValues.put("COMP",comp);
+        long result = db.insertWithOnConflict(TABLE_LOG,null,contentValues,SQLiteDatabase.CONFLICT_IGNORE);
+        return result == 1;
+    }
+    boolean updateLog(BigInteger id,String name,BigInteger number) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("EMP_NAME", name);
+        contentValues.put("EMP_NUMBER", String.valueOf(number));
+        BigInteger date = BigInteger.valueOf(System.currentTimeMillis());
+        contentValues.put("ASSIGN_DATE", String.valueOf(date));
+        contentValues.put("STATE","1");
+        db.update(TABLE_LOG, contentValues, "ID = ?", new String[]{String.valueOf(id)});
+        return true;
+    }
+    boolean updateLog(BigInteger id,BigInteger date,int state) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("FINISH_DATE", String.valueOf(date));
+        contentValues.put("STATE", state);
+        db.update(TABLE_LOG, contentValues, "ID = ?", new String[]{String.valueOf(id)});
+        return true;
+    }
 
 
 }

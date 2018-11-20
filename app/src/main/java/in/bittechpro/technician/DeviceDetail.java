@@ -24,7 +24,7 @@ public class DeviceDetail {
             while (res.moveToNext()) {
                 this.device_number[i] = new BigInteger(res.getString(0));
                 this.device_name[i] = res.getString(1);
-                this.state[i] = res.getInt(3);
+                this.state[i] = res.getInt(2);
                 i++;
             }
         }

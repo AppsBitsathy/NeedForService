@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity  {
 
     String[] permissions = new String[]{
             Manifest.permission.READ_SMS,
+            Manifest.permission.SEND_SMS
     };
     String[] number,body;
     BigInteger[] date,num_ary;
@@ -176,6 +178,17 @@ public class MainActivity extends AppCompatActivity  {
             super.onBackPressed();
         }
     }
+
+    /*@Override
+    protected void onResume() {
+
+        Intent i = getBaseContext().getPackageManager()
+                .getLaunchIntentForPackage( getBaseContext().getPackageName() );
+        Objects.requireNonNull(i).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(i);
+        super.onResume();
+
+    }*/
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String permissions[], @NonNull int[] grantResults) {

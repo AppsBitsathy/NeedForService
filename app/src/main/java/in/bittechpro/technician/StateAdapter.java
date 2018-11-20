@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.telephony.SmsManager;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.ogaclejapan.arclayout.ArcLayout;
@@ -37,6 +39,7 @@ public class StateAdapter extends ArrayAdapter<String> {
     private final int[] dev_state;
     private DeviceFunction devComp;
     private EmployeeDetail employeeDetail;
+    DBHelper dbHelper;
 
 
     StateAdapter(Activity context, String[] deviceName, BigInteger[] deviceNumber, int[] deviceState) {
@@ -45,7 +48,8 @@ public class StateAdapter extends ArrayAdapter<String> {
         this.dev_name = deviceName;
         this.dev_num = deviceNumber;
         this.dev_state = deviceState;
-        employeeDetail = new EmployeeDetail(context);;
+        employeeDetail = new EmployeeDetail(context);
+        dbHelper = new DBHelper(context);
     }
 
     @NonNull
@@ -85,8 +89,8 @@ public class StateAdapter extends ArrayAdapter<String> {
             public void onAnimationRepeat(Animation animation) {}
         });
 
-        int n = new Random().nextInt(100);
-        if(n%2 == 0) { //if( dev_state[position]==1){
+        //int n = new Random().nextInt(100);
+        if( dev_state[position]==1){ //if(n%2 == 0) { //
             device_icon.setImageResource(R.drawable.icon_red);
         }
         device_icon.setOnClickListener(new View.OnClickListener() {
@@ -107,8 +111,9 @@ public class StateAdapter extends ArrayAdapter<String> {
         int[] deviceCompId = devComp.deviceCompId();
         int[] deviceCompState = devComp.deviceCompState();
         int deviceCompCount = devComp.deviceCompCount();
+        final BigInteger[] deviceCompLogId = devComp.deviceCompLogId();
 
-        BigInteger[] emp_number = employeeDetail.getEmp_number();
+        final BigInteger[] emp_number = employeeDetail.getEmp_number();
         final String[] emp_name = employeeDetail.getEmp_name();
         final int emp_count = employeeDetail.getCount();
 
@@ -138,23 +143,37 @@ public class StateAdapter extends ArrayAdapter<String> {
 //                    Toast.makeText(context, dev_name[position]+ finalI, Toast.LENGTH_SHORT).show();
                     final AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
-                    LayoutInflater inflater = LayoutInflater.from(context);
-                    @SuppressLint("ViewHolder") View alertView = inflater.inflate(R.layout.fragment_assign, null);
-                    builder.setView(alertView);
-
-                    builder.setPositiveButton("Assign", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-
-                        }
-                    });
-
                     if(emp_count>0){
+                        LayoutInflater inflater = LayoutInflater.from(context);
+                        @SuppressLint("ViewHolder") View alertView = inflater.inflate(R.layout.fragment_assign, null);
+                        builder.setView(alertView);
+
                         final Spinner spinner_emp = alertView.findViewById(R.id.spinner_dev_emp);
                         ArrayAdapter<String> list = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1,emp_name);
                         list.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinner_emp.setAdapter(list);
+                        builder.setTitle("Assign Employee");
+                        builder.setMessage(dev_name[position]);
+                        builder.setPositiveButton("Assign", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                Boolean updateLog = dbHelper.updateLog(deviceCompLogId[finalI],emp_name[spinner_emp.getSelectedItemPosition()],emp_number[spinner_emp.getSelectedItemPosition()]);
+                                SmsManager smsManager = SmsManager.getDefault();
+                                smsManager.sendTextMessage(String.valueOf(emp_number[spinner_emp.getSelectedItemPosition()]), null,"NFS Alert\nDevice : "+dev_name[position]+"\nComplaint : "+(finalI+1), null, null);
+                            }
+                        });
+                    }else {
+                        builder.setTitle("Alert");
+                        builder.setMessage("No employee found").setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                            }
+                        });
+//                        Toast.makeText(context, "Please add an Employee to assign", Toast.LENGTH_SHORT).show();
                     }
+
 
 
                     final AlertDialog dialog = builder.create();
