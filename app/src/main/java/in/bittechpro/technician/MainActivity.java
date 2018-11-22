@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -18,6 +19,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -44,11 +46,13 @@ public class MainActivity extends AppCompatActivity  {
 
     String[] permissions = new String[]{
             Manifest.permission.READ_SMS,
-            Manifest.permission.SEND_SMS
+            Manifest.permission.SEND_SMS,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
     String[] number,body;
     BigInteger[] date,num_ary;
     Fragment fragment = null;
+    String fragTag ;
 
     ArrayList<String> arrayList;
 
@@ -85,15 +89,19 @@ public class MainActivity extends AppCompatActivity  {
                 switch (menuItem.getItemId()) {
                     case R.id.navigation_home:
                         fragment = new StateFragment();
+                        fragTag = "state";
                         break;
                     case R.id.navigation_device:
                         fragment = new DeviceFragment();
+                        fragTag = "device";
                         break;
                     case R.id.navigation_employee:
                         fragment = new EmployeeFragment();
+                        fragTag = "employee";
                         break;
                     case R.id.navigation_backup:
-
+                        fragment = new SettingsFragment();
+                        fragTag = "setting";
                         break;
 
                 }
@@ -101,11 +109,11 @@ public class MainActivity extends AppCompatActivity  {
 
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     ft.setCustomAnimations(android.R.animator.fade_in,android.R.animator.fade_out);
-                    ft.replace(R.id.content_frame, fragment);
+                    ft.replace(R.id.content_frame, fragment,fragTag);
                     ft.commit();
                     return true;
                 } else {
-                    Toast.makeText(MainActivity.this, "will be created", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "There is no way here", Toast.LENGTH_SHORT).show();
                     return false;
                 }
             }
@@ -120,8 +128,9 @@ public class MainActivity extends AppCompatActivity  {
 
         if (fragment == null) {
             fragment = new StateFragment();
+            fragTag="state";
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.content_frame, fragment);
+            ft.replace(R.id.content_frame, fragment,fragTag);
             ft.commit();
         }
     }
@@ -171,12 +180,28 @@ public class MainActivity extends AppCompatActivity  {
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
+       if(fragTag.equals("state")) {
+           AlertDialog.Builder builder = new AlertDialog.Builder(this);
+           builder.setMessage("Do you want to exit");
+           builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+               @Override
+               public void onClick(DialogInterface dialogInterface, int i) {
+                   MainActivity.super.onBackPressed();
+               }
+           }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+               @Override
+               public void onClick(DialogInterface dialogInterface, int i) {
+
+               }
+           });
+
+       } else {
+           fragment = new StateFragment();
+           fragTag = "state";
+           FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+           ft.replace(R.id.content_frame, fragment,fragTag);
+           ft.commit();
+       }
     }
 
     /*@Override

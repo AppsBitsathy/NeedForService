@@ -233,5 +233,9 @@ public class DBHelper extends SQLiteOpenHelper {
         return true;
     }
 
-
+    ////////EXPORT LOG//////////
+    Cursor exportLog(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        return db.rawQuery("select * from "+TABLE_LOG,null);
+    }
 }

@@ -40,6 +40,7 @@ public class StateFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_state, container, false);
+
         recycle = view.findViewById(R.id.recycle);
 
         applicationContext = MainActivity.getContextOfApplication();
