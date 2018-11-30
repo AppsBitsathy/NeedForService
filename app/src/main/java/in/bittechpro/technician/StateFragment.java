@@ -2,10 +2,12 @@ package in.bittechpro.technician;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -35,13 +37,16 @@ public class StateFragment extends Fragment {
     String[] deviceName;
     BigInteger[] deviceNumber;
     int[] deviceState;
+    FloatingActionButton restart;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         view = inflater.inflate(R.layout.fragment_state, container, false);
 
         recycle = view.findViewById(R.id.recycle);
+
+        restart = view.findViewById(R.id.fab_restart);
 
         applicationContext = MainActivity.getContextOfApplication();
 
@@ -69,10 +74,22 @@ public class StateFragment extends Fragment {
         updateState();
 
         deviceState = new DeviceDetail(applicationContext).deviceState();
+        deviceName = new DeviceDetail(applicationContext).deviceName();
+        deviceNumber = new DeviceDetail(applicationContext).deviceNumber();
         if(deviceDetail.deviceCount()>0) {
             StateAdapter adapter = new StateAdapter(getActivity(), deviceName, deviceNumber, deviceState);
             recycle.setAdapter(adapter);
         }
+
+        restart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = applicationContext.getPackageManager()
+                        .getLaunchIntentForPackage( applicationContext.getPackageName() );
+                Objects.requireNonNull(i).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+            }
+        });
     }
 
     private void setState() {
@@ -86,7 +103,7 @@ public class StateFragment extends Fragment {
                 dateTimeAsID = new BigInteger(res.getString(0));
                 t_name = res.getString(1);
                 body = res.getString(2);
-                //body = body.substring(0,5);
+                body = body.trim();
                 dbHelper.smsState(dateTimeAsID);
                 try{
                     id = Integer.parseInt(body.substring(3,5));

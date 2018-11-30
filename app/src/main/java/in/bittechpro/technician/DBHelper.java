@@ -18,7 +18,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String TABLE_LOG ="NFSLOG";
 
     DBHelper(Context context) {
-        super(context, DB_NAME, null, 17);
+        super(context, DB_NAME, null, 20);
     }
 
 
@@ -62,7 +62,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     Cursor getAllSms() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("select * from "+TABLE_SMS+" where state = 1 ",null);
+        return db.rawQuery("select * from "+TABLE_SMS+" where state = 1 order by id asc",null);
     }
 
     Cursor getLastSms(BigInteger number){
@@ -128,7 +128,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     Cursor getAllDev() {
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("select * from "+TABLE_DEV+" ORDER BY NAME",null);
+        return db.rawQuery("select * from "+TABLE_DEV+" ORDER BY STATE DESC, NAME ASC",null);
     }
 
     Cursor getOneDev(BigInteger id){
@@ -168,7 +168,7 @@ public class DBHelper extends SQLiteOpenHelper {
     /////////////DYNAMIC TABLE/////
     private Boolean createDevCompTable(String table) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("CREATE TABLE IF NOT EXISTS \"" + table + "\" (ID INTEGER PRIMARY KEY , STATE INTEGER DEFAULT 0, LOG_ID BIGINT DEFAULT 0)");
+        db.execSQL("CREATE TABLE IF NOT EXISTS \"" + table + "\" (ID INTEGER PRIMARY KEY , STATE INTEGER DEFAULT 0, LOG_ID BIGINT DEFAULT 0, ASSIGNED TEXT DEFAULT 'Not yet assigned')");
         int i;
         for(i=1;i<=15;i++) {
             db.execSQL("INSERT OR REPLACE  INTO \""+table+"\"(ID) VALUES ("+String.valueOf(i)+")");
@@ -178,6 +178,11 @@ public class DBHelper extends SQLiteOpenHelper {
     boolean updateComp(String table,int id,int state,BigInteger log_id){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("UPDATE \""+table+"\" SET STATE="+String.valueOf(state)+", LOG_ID = "+String.valueOf(log_id)+" WHERE ID = "+String.valueOf(id));
+        return true;
+    }
+    boolean updateCompAssigned(String table,int id,String emp){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("UPDATE \""+table+"\" SET ASSIGNED = \""+emp+"\" WHERE ID = "+String.valueOf(id));
         return true;
     }
     Cursor getDevCompState(String table){
@@ -236,6 +241,6 @@ public class DBHelper extends SQLiteOpenHelper {
     ////////EXPORT LOG//////////
     Cursor exportLog(){
         SQLiteDatabase db = this.getReadableDatabase();
-        return db.rawQuery("select * from "+TABLE_LOG,null);
+        return db.rawQuery("select ID,DEV_NAME,DEV_NUMBER,COMP,EMP_NAME,EMP_NUMBER,ASSIGN_DATE,FINISH_DATE,STATE from "+TABLE_LOG,null);
     }
 }

@@ -3,12 +3,10 @@ package in.bittechpro.technician;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.telephony.SmsManager;
 import android.util.TypedValue;
@@ -24,12 +22,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.ogaclejapan.arclayout.ArcLayout;
 
 import java.math.BigInteger;
 import java.util.Objects;
-import java.util.Random;
 
 public class StateAdapter extends ArrayAdapter<String> {
 
@@ -40,6 +36,7 @@ public class StateAdapter extends ArrayAdapter<String> {
     private DeviceFunction devComp;
     private EmployeeDetail employeeDetail;
     DBHelper dbHelper;
+    CompList compList;
 
 
     StateAdapter(Activity context, String[] deviceName, BigInteger[] deviceNumber, int[] deviceState) {
@@ -109,19 +106,20 @@ public class StateAdapter extends ArrayAdapter<String> {
 
         devComp = new DeviceFunction(context,dev_num[position]);
         int[] deviceCompId = devComp.deviceCompId();
-        int[] deviceCompState = devComp.deviceCompState();
+        final int[] deviceCompState = devComp.deviceCompState();
         int deviceCompCount = devComp.deviceCompCount();
         final BigInteger[] deviceCompLogId = devComp.deviceCompLogId();
+        final String[] deviceCompAssigned = devComp.deviceCompAssigned();
 
         final BigInteger[] emp_number = employeeDetail.getEmp_number();
         final String[] emp_name = employeeDetail.getEmp_name();
         final int emp_count = employeeDetail.getCount();
 
 
-
+        compList = new CompList();
 
         for (int i = 0; i < deviceCompCount ; i++) {
-            ImageButton fab = new ImageButton(context);
+            final ImageButton fab = new ImageButton(context);
             int height = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 32, context.getResources().getDisplayMetrics());
             fab.setLayoutParams(new ArcLayout.LayoutParams(height,height));
             fab.setImageResource(R.drawable.test);
@@ -147,22 +145,46 @@ public class StateAdapter extends ArrayAdapter<String> {
                         LayoutInflater inflater = LayoutInflater.from(context);
                         @SuppressLint("ViewHolder") View alertView = inflater.inflate(R.layout.fragment_assign, null);
                         builder.setView(alertView);
-
+                        TextView txt_assigned = alertView.findViewById(R.id.txt_assigned);
                         final Spinner spinner_emp = alertView.findViewById(R.id.spinner_dev_emp);
                         ArrayAdapter<String> list = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1,emp_name);
                         list.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         spinner_emp.setAdapter(list);
+                        if(deviceCompState[finalI]==0){
+                            spinner_emp.setEnabled(false);
+                            txt_assigned.setText("State : No Problem");
+                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                }
+                            });
+
+                        }else{
+                            txt_assigned.setText(deviceCompAssigned[finalI]);
+                            builder.setPositiveButton("Assign", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    Boolean updateLog = dbHelper.updateLog(deviceCompLogId[finalI],emp_name[spinner_emp.getSelectedItemPosition()],emp_number[spinner_emp.getSelectedItemPosition()]);
+                                    SmsManager smsManager = SmsManager.getDefault();
+                                    smsManager.sendTextMessage(String.valueOf(emp_number[spinner_emp.getSelectedItemPosition()]), null,"NFS Alert\nDevice : "+dev_name[position]+"\nComplaint : "+(compList.getComp(finalI+1)), null, null);
+                                    String emp = "Assigned to "+emp_name[spinner_emp.getSelectedItemPosition()]+" : "+String.valueOf(emp_number[spinner_emp.getSelectedItemPosition()]);
+                                    dbHelper.updateCompAssigned(String.valueOf(dev_num[position]),finalI+1,emp);
+                                    Toast.makeText(context, "SMS sent", Toast.LENGTH_SHORT).show();
+
+                                    Intent intent = context.getPackageManager()
+                                            .getLaunchIntentForPackage( context.getPackageName() );
+                                    Objects.requireNonNull(intent).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    context.startActivity(intent);
+                                }
+                            });
+                        }
+
+
                         builder.setTitle("Assign Employee");
                         builder.setMessage(dev_name[position]);
-                        builder.setPositiveButton("Assign", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
 
-                                Boolean updateLog = dbHelper.updateLog(deviceCompLogId[finalI],emp_name[spinner_emp.getSelectedItemPosition()],emp_number[spinner_emp.getSelectedItemPosition()]);
-                                SmsManager smsManager = SmsManager.getDefault();
-                                smsManager.sendTextMessage(String.valueOf(emp_number[spinner_emp.getSelectedItemPosition()]), null,"NFS Alert\nDevice : "+dev_name[position]+"\nComplaint : "+(finalI+1), null, null);
-                            }
-                        });
                     }else {
                         builder.setTitle("Alert");
                         builder.setMessage("No employee found").setPositiveButton("OK", new DialogInterface.OnClickListener() {
