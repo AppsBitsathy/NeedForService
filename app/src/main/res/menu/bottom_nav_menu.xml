@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/icons_home"
+        android:title="Home">
+
+    </item>
+    <item
+        android:id="@+id/navigation_device"
+        android:icon="@drawable/icon_device"
+        android:title="Device">
+
+    </item>
+    <item
+        android:id="@+id/navigation_employee"
+        android:icon="@drawable/icon_emp"
+        android:title="Employee">
+
+    </item>
+    <item
+        android:id="@+id/navigation_backup"
+        android:icon="@drawable/icon_setting"
+        android:title="NFS">
+
+    </item>
+</menu>

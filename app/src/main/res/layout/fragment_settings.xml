@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".SettingsFragment">
+
+    <Button
+        android:id="@+id/btn_export"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_margin="5dp"
+        android:backgroundTint="#ffffff"
+        android:fontFamily="@font/cabin"
+        android:text="Export Log" />
+
+    <TextView
+        android:id="@+id/txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/btn_export"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="5dp"
+        android:fontFamily="@font/cabin"
+        android:padding="5dp"
+        android:text="Exported Log file saved in your Local storage\n ( open File manager -> Internal Storage -> NFS ( Folde name ) -> nfs_log.csv )"
+        android:textAlignment="center" />
+</RelativeLayout>
