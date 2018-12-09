@@ -53,7 +53,7 @@ public class DeviceFragment extends Fragment {
 
         MainActivity.mainTitle.setText("NFS - Device");
 
-        MainActivity.getBottomNavigationView().getMenu().findItem(R.id.navigation_device).setChecked(true);
+        //MainActivity.getBottomNavigationView().getMenu().findItem(R.id.navigation_device).setChecked(true);
 
         device = view.findViewById(R.id.spinner_device);
         add_dev = view.findViewById(R.id.add_dev);

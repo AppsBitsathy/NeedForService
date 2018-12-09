@@ -8,6 +8,13 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" />
+
     <ListView
         android:id="@+id/recycle"
         android:layout_width="match_parent"
@@ -20,17 +27,4 @@
         android:scrollbars="horizontal"
         tools:listheader="@mipmap/ic_launcher" />
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_restart"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="20dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:src="@drawable/refresh"
-        android:tint="@color/orange"
-        app:backgroundTint="@color/themeColor" />
 </RelativeLayout>

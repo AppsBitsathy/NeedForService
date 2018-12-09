@@ -68,14 +68,13 @@ public class MainActivity extends AppCompatActivity  {
     public static BottomNavigationView getBottomNavigationView() {
         return bottomNavigationView;
     };
+    FloatingActionButton restart;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
 
         contextOfApplication = getApplicationContext();
 
@@ -91,10 +90,10 @@ public class MainActivity extends AppCompatActivity  {
                         fragment = new StateFragment();
                         fragTag = "state";
                         break;
-                    case R.id.navigation_device:
+                    /*case R.id.navigation_device:
                         fragment = new DeviceFragment();
                         fragTag = "device";
-                        break;
+                        break;*/
                     case R.id.navigation_employee:
                         fragment = new EmployeeFragment();
                         fragTag = "employee";
@@ -119,12 +118,11 @@ public class MainActivity extends AppCompatActivity  {
             }
         });
 
-
-        mainTitle= findViewById(R.id.title_toolbar);
+        mainTitle = findViewById(R.id.title_toolbar);
 
         dbHelper = new DBHelper(this);
 
-        addSms();
+        //addSms();
 
         if (fragment == null) {
             fragment = new StateFragment();
@@ -133,6 +131,18 @@ public class MainActivity extends AppCompatActivity  {
             ft.replace(R.id.content_frame, fragment,fragTag);
             ft.commit();
         }
+
+        restart =   findViewById(R.id.fab_restart);
+
+        restart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent i = contextOfApplication.getPackageManager()
+                        .getLaunchIntentForPackage( contextOfApplication.getPackageName() );
+                Objects.requireNonNull(i).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(i);
+            }
+        });
     }
 
     private void addSms() {
@@ -174,9 +184,6 @@ public class MainActivity extends AppCompatActivity  {
             }
         }
     }
-
-
-
 
     @Override
     public void onBackPressed() {

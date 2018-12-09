@@ -6,12 +6,12 @@
         android:title="Home">
 
     </item>
-    <item
+    <!--<item
         android:id="@+id/navigation_device"
         android:icon="@drawable/icon_device"
         android:title="Device">
 
-    </item>
+    </item>-->
     <item
         android:id="@+id/navigation_employee"
         android:icon="@drawable/icon_emp"

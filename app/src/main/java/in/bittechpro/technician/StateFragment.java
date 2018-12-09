@@ -1,9 +1,12 @@
 package in.bittechpro.technician;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,11 +18,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.reflect.Array;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Objects;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class StateFragment extends Fragment {
@@ -29,24 +41,26 @@ public class StateFragment extends Fragment {
         // Required empty public constructor
     }
 
-    ListView recycle;
+
     View view;
     DeviceDetail deviceDetail;
     Context applicationContext;
-    DBHelper dbHelper;
+    /*DBHelper dbHelper;
     String[] deviceName;
     BigInteger[] deviceNumber;
-    int[] deviceState;
-    FloatingActionButton restart;
+    int[] deviceState;*/
+
+    HashMap<String,String> params;
+    SharedPreferences sharedpreferences;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_state, container, false);
 
-        recycle = view.findViewById(R.id.recycle);
 
-        restart = view.findViewById(R.id.fab_restart);
+
+
 
         applicationContext = MainActivity.getContextOfApplication();
 
@@ -56,11 +70,12 @@ public class StateFragment extends Fragment {
 
         MainActivity.getBottomNavigationView().getMenu().findItem(R.id.navigation_home).setChecked(true);
 
-        deviceName = deviceDetail.deviceName();
+        /*deviceName = deviceDetail.deviceName();
         deviceNumber = deviceDetail.deviceNumber();
         deviceState = deviceDetail.deviceState();
 
-        dbHelper = new DBHelper(applicationContext);
+        dbHelper = new DBHelper(applicationContext);*/
+        sharedpreferences = applicationContext.getSharedPreferences(SPrefManager.PREF_NAME, Context.MODE_PRIVATE);
 
         return view;
     }
@@ -69,7 +84,7 @@ public class StateFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        setState();
+        /*setState();
 
         updateState();
 
@@ -79,20 +94,97 @@ public class StateFragment extends Fragment {
         if(deviceDetail.deviceCount()>0) {
             StateAdapter adapter = new StateAdapter(getActivity(), deviceName, deviceNumber, deviceState);
             recycle.setAdapter(adapter);
-        }
+        }*/
 
-        restart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent i = applicationContext.getPackageManager()
-                        .getLaunchIntentForPackage( applicationContext.getPackageName() );
-                Objects.requireNonNull(i).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                startActivity(i);
-            }
-        });
+
+
+        getDevice(view);
+
     }
 
-    private void setState() {
+    private void getDevice(View view) {
+
+        params = new HashMap<>();
+        params.put("superv_id",sharedpreferences.getString(SPrefManager.SUPERVISOR_ID,"NULL"));
+
+        asyncTask(params,getActivity(),R.id.progressBar);
+
+    }
+
+    private static void asyncTask(HashMap<String, String> params, Activity activity, int bar) {
+
+        class TaskAsync extends AsyncTask<Void, Void, String> {
+
+            private ProgressBar progressBar;
+            private HashMap<String, String> params;
+            private Activity activity;
+            private int bar;
+            private Context context;
+
+            private TaskAsync(HashMap<String, String> params, Activity activity, int bar) {
+                this.params = params;
+                this.activity = activity;
+                this.bar = bar;
+                this.context = activity.getApplicationContext();
+            }
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                if(bar!=0) {
+                    progressBar = activity.findViewById(bar);
+                    progressBar.setVisibility(View.VISIBLE);
+                }
+            }
+
+            @Override
+            protected String doInBackground(Void... voids) {
+                RequestHandler requestHandler = new RequestHandler();
+                return requestHandler.sendPostRequest(UrlManager.GET_ALL_DEVICE, params);
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                Log.d("ooooo", s);
+                progressBar.setVisibility(View.GONE);
+                try {
+                    JSONObject result = new JSONObject(s);
+                    if(result.getInt("status")==0){
+                        if(result.getInt("nos")!=0) {
+
+                            JSONArray dev_id = result.getJSONArray("device_id");
+                            String[] device_id = new String[dev_id.length()];
+                            for(int i = 0; i < dev_id.length(); i++)
+                                device_id[i] = dev_id.getString(i);
+
+                            JSONArray dev_name = result.getJSONArray("device_name");
+                            String[] deviceName = new String[dev_name.length()];
+                            for(int i = 0; i < dev_name.length(); i++)
+                                deviceName[i] = dev_name.getString(i);
+
+                            JSONObject deviceState = result.getJSONObject("device_state");
+                            JSONObject deviceAssign = result.getJSONObject("device_assign");
+
+                            ListView recycle = activity.findViewById(R.id.recycle);
+                            StateAdapter adapter = new StateAdapter(activity, deviceName, device_id, deviceState,deviceAssign);
+                            recycle.setAdapter(adapter);
+                        }
+                        else Toast.makeText(context, "No Device has been assigned to you", Toast.LENGTH_SHORT).show();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(context, "Error in connecting to network \n Try after sometime", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+
+        TaskAsync registerDevice = new TaskAsync(params,activity,bar);
+        registerDevice.execute();
+    }
+
+   /* private void setState() {
         String t_name,body;
         BigInteger dateTimeAsID;
         int id,state,count;
@@ -137,5 +229,5 @@ public class StateFragment extends Fragment {
                 Boolean update = dbHelper.updateDev(device,0);
             }
         }
-    }
+    }*/
 }

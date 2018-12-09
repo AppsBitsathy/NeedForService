@@ -22,14 +22,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        app:menu="@menu/bottom_nav_menu"
         android:layout_gravity="bottom"
         android:background="#ffffff"
-
         android:foreground="?attr/selectableItemBackground"
-        app:itemIconTint="@color/orange"
-        app:itemTextColor="@color/orange"
-        app:elevation="0dp">
+
+        app:elevation="0dp"
+        app:itemIconTint="@color/colorPrimaryDark"
+        app:itemTextColor="@color/colorPrimaryDark"
+        app:menu="@menu/bottom_nav_menu">
 
     </android.support.design.widget.BottomNavigationView>
 

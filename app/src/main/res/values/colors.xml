@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#00897b</color>
-    <color name="colorPrimaryDark">#00897b</color><!--#00574B-->
-    <color name="colorAccent">#f9461c</color><!--#d81b60-->
+    <color name="colorPrimaryDark">#00bfa5</color><!--#00574B-->
+    <color name="colorAccent">#00bfa5</color><!--#d81b60-->
     <color name="themeColor">#ffffff</color><!---->
     <color name="orange">#f9461c</color>
 </resources>
