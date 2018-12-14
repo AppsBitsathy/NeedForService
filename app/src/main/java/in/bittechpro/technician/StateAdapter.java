@@ -289,10 +289,10 @@ public class StateAdapter extends ArrayAdapter<String> {
 
                                     Toast.makeText(context, "SMS sent", Toast.LENGTH_SHORT).show();
 
-                                    Intent intent = context.getPackageManager()
+                                    /*Intent intent = context.getPackageManager()
                                             .getLaunchIntentForPackage( context.getPackageName() );
                                     Objects.requireNonNull(intent).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    context.startActivity(intent);
+                                    context.startActivity(intent);*/
                                 }
                             });
                         }

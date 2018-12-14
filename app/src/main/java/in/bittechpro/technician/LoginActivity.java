@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         btn_register = findViewById(R.id.submit_register);
         sup_num = findViewById(R.id.sup_num);
         sup_name = findViewById(R.id.sup_name);
+        sup_name.requestFocus();
         progressBar = findViewById(R.id.progressBarRegister);
 
         SharedPreferences sharedpreferences = getSharedPreferences(SPrefManager.PREF_NAME, Context.MODE_PRIVATE);

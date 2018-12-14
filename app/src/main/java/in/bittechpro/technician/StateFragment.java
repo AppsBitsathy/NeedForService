@@ -146,7 +146,7 @@ public class StateFragment extends Fragment {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                Log.d("ooooo", s);
+                Log.d("ooooo1", s);
                 progressBar.setVisibility(View.GONE);
                 try {
                     JSONObject result = new JSONObject(s);

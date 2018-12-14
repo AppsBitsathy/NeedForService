@@ -99,8 +99,8 @@ public class MainActivity extends AppCompatActivity  {
                         fragTag = "employee";
                         break;
                     case R.id.navigation_backup:
-                        fragment = new SettingsFragment();
-                        fragTag = "setting";
+                        /*fragment = new SettingsFragment();
+                        fragTag = "setting";*/
                         break;
 
                 }
@@ -112,7 +112,7 @@ public class MainActivity extends AppCompatActivity  {
                     ft.commit();
                     return true;
                 } else {
-                    Toast.makeText(MainActivity.this, "There is no way here", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(MainActivity.this, "There is no way here", Toast.LENGTH_SHORT).show();
                     return false;
                 }
             }
@@ -140,6 +140,7 @@ public class MainActivity extends AppCompatActivity  {
                 Intent i = contextOfApplication.getPackageManager()
                         .getLaunchIntentForPackage( contextOfApplication.getPackageName() );
                 Objects.requireNonNull(i).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                finish();
                 startActivity(i);
             }
         });
@@ -193,6 +194,7 @@ public class MainActivity extends AppCompatActivity  {
            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                @Override
                public void onClick(DialogInterface dialogInterface, int i) {
+                   finish();
                    MainActivity.super.onBackPressed();
                }
            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
